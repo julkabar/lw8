@@ -36,15 +36,18 @@ public class ShoppingCart{
     public void addItem(String title, double price, int quantity, ItemType type){
         if (title == null || title.length() == 0 || title.length() > 32)
             throw new IllegalArgumentException("Illegal title");
+
         if (price < 0.01)
             throw new IllegalArgumentException("Illegal price");
+
         if (quantity <= 0)
             throw new IllegalArgumentException("Illegal quantity");
+
         Item item = new Item();
-        item.title  = title;
-        item.price  = price;
-        item.quantity = quantity;
-        item.type = type;
+        item.setTitle(title);
+        item.setPrice(price);
+        item.setQuantity(quantity);
+        item.setItemType(type);
         items.add(item);
     }
 
@@ -72,14 +75,17 @@ public class ShoppingCart{
         double total = 0.00;
         int  index = 0;
         for (Item item : items) {
-            int discount = calculateDiscount(item.type, item.quantity);
-            double itemTotal = item.price * item.quantity * (100.00 - discount) / 100.00;
+            int discount = calculateDiscount(item.getItemType(), item.getQuantity());
+            item.setDiscount(discount);
+            double itemTotal = item.getPrice() * item.getQuantity()
+                    * (100.0 - discount) / 100.0;
+            item.setTotal(itemTotal);
             lines.add(new String[]{
                     String.valueOf(++index),
-                    item.title,
-                    MONEY.format(item.price),
-                    String.valueOf(item.quantity),
-                    (discount == 0) ? "-" : (String.valueOf(discount) + "%"),
+                    item.getTitle(),
+                    MONEY.format(item.getPrice()),
+                    String.valueOf(item.getQuantity()),
+                    discount == 0 ? "-" : discount + "%",
                     MONEY.format(itemTotal)
             });
             total += itemTotal;
@@ -198,9 +204,60 @@ public class ShoppingCart{
 
     /** item info */
     private static class Item {
-        String title;
-        double price;
-        int quantity;
-        ItemType type;
+
+        private String title;
+        private double price;
+        private int quantity;
+        private ItemType type;
+        private int discount;
+        private double total;
+
+        public String getTitle(){
+            return title;
+        }
+
+        public void setTitle(String title){
+            this.title = title;
+        }
+
+        public double getPrice(){
+            return price;
+        }
+
+        public void setPrice(double price){
+            this.price = price;
+        }
+
+        public int getQuantity(){
+            return quantity;
+        }
+
+        public void setQuantity(int quantity){
+            this.quantity = quantity;
+        }
+
+        public ItemType getItemType(){
+            return type;
+        }
+
+        public void setItemType(ItemType type){
+            this.type = type;
+        }
+
+        public void setDiscount(int discount){
+            this.discount = discount;
+        }
+
+        public int getDiscount(){
+            return discount;
+        }
+
+        public double getTotal(){
+            return total;
+        }
+
+        public void setTotal(double total){
+            this.total = total;
+        }
     }
 }
