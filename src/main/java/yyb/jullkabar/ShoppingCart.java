@@ -92,24 +92,12 @@ public class ShoppingCart{
 
 private String getFormattedTicketTable(double total) {
 
-    List<String[]> lines = new ArrayList<>();
+    List<String[]> lines = convertItemsToTableLines();
     String[] header = {"#", "Item", "Price", "Quan.", "Discount", "Total"};
     int[] align = {1, -1, 1, 1, 1, 1};
 
-    int index = 0;
-    for (Item item : items) {
-        lines.add(new String[]{
-                String.valueOf(++index),
-                item.getTitle(),
-                MONEY.format(item.getPrice()),
-                String.valueOf(item.getQuantity()),
-                item.getDiscount() == 0 ? "-" : item.getDiscount() + "%",
-                MONEY.format(item.getTotal())
-        });
-    }
-
     String[] footer = {
-            String.valueOf(index), "", "", "", "",
+            String.valueOf(lines.size()), "", "", "", "",
             MONEY.format(total)
     };
 
@@ -136,6 +124,23 @@ private String getFormattedTicketTable(double total) {
 
     return sb.toString();
 }
+
+    private List<String[]> convertItemsToTableLines() {
+        List<String[]> lines = new ArrayList<>();
+        int index = 0;
+
+        for (Item item : items) {
+            lines.add(new String[]{
+                    String.valueOf(++index),
+                    item.getTitle(),
+                    MONEY.format(item.getPrice()),
+                    String.valueOf(item.getQuantity()),
+                    item.getDiscount() == 0 ? "-" : item.getDiscount() + "%",
+                    MONEY.format(item.getTotal())
+            });
+        }
+        return lines;
+    }
 
     private void appendFormattedLine(StringBuilder sb,
                                      String[] line,
